@@ -17,6 +17,7 @@ class UploadPage extends StatefulWidget {
 class _UploadPageState extends State<UploadPage> {
   TextEditingController captionController = TextEditingController();
 
+  bool isDeleteImage = false;
   bool isUpload = false;
   File? image;
 
@@ -26,12 +27,9 @@ class _UploadPageState extends State<UploadPage> {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (image == null) return;
       final imageTemporary = File(image.path);
-
+      isDeleteImage = true;
       setState(() {
-        if (kDebugMode) {
-          print("Hello path => $imageTemporary");
-        }
-
+        isUpload = true;
         this.image = imageTemporary;
       });
     } on PlatformException catch (e) {
@@ -44,12 +42,8 @@ class _UploadPageState extends State<UploadPage> {
       final image = await ImagePicker().pickImage(source: ImageSource.camera);
       if (image == null) return;
       final imageTemporary = File(image.path);
-
       setState(() {
-        if (kDebugMode) {
-          print("Hello path => $imageTemporary");
-        }
-
+        isUpload = true;
         this.image = imageTemporary;
       });
     } on PlatformException catch (e) {
@@ -66,7 +60,9 @@ class _UploadPageState extends State<UploadPage> {
         actions: [
           IconButton(
             icon: Icon(Icons.add_photo_alternate, color: Colors.red.shade400,),
-            onPressed: (){},
+            onPressed: (){
+              
+            },
             splashRadius: 10,
             padding: const EdgeInsets.only(right: 8),
             constraints: const BoxConstraints(),
@@ -80,26 +76,32 @@ class _UploadPageState extends State<UploadPage> {
             // #image upload
             GestureDetector(
               onTap: (){
-                pickImage();
-                setState(() {
-                  isUpload = true;
-                });
-              },
+                showModalBottomSheet(
+                    elevation: 5,
+                    clipBehavior: Clip.antiAlias,
+                    context: context,
+                    builder: (BuildContext context){
+                      return uploadBottomSheet(context);
+                    });
+                },
               child: Stack(
                 children: [
 
                   // #upload image
-                  Container(
+                  isUpload && image != null ? SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.5,
+                    width: MediaQuery.of(context).size.width,
+                    child: Image.file(image!, fit: BoxFit.cover,)
+                  )
+                  : Container(
                     height: MediaQuery.of(context).size.height * 0.5,
                     width: MediaQuery.of(context).size.width,
                     color: Colors.grey.shade600,
-                    child: isUpload && image != null
-                        ? Image.file(image!, fit: BoxFit.cover,)
-                        : const Icon(Icons.add_a_photo_rounded),
+                    child: const Icon(Icons.add_a_photo_rounded),
                   ),
 
-                  // #iconButton
-                  Positioned(
+                  // #iconButton close
+                  isUpload ? Positioned(
                     top: 15,
                     right: 15,
                     child: GlassMorphism(
@@ -107,13 +109,17 @@ class _UploadPageState extends State<UploadPage> {
                       end: 0.3,
                       child: IconButton(
                         icon: const Icon(Icons.close, color: Colors.black, size: 20,),
-                        onPressed: (){},
+                        onPressed: (){
+                          setState(() {
+                            isUpload = false;
+                          });
+                        },
                         padding: EdgeInsets.zero,
                         splashRadius: 20,
                         constraints: const BoxConstraints(),
                       ),
                     ),
-                  ),
+                  ) : const SizedBox.shrink(),
                 ],
               ),
             ),
@@ -136,6 +142,54 @@ class _UploadPageState extends State<UploadPage> {
                 ),
               ),
             )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget uploadBottomSheet(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      child: SizedBox(
+        height: 100,
+        child: Column(
+          children: [
+            GestureDetector(
+              onTap: pickImage,
+              child: Container(
+                height: 50,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: const [
+                    Icon(Icons.image),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Text("Pick Photo", style: TextStyle(color: Colors.black),),
+                  ],
+                ),
+              ),
+            ),
+
+            GestureDetector(
+              onTap: takeImage,
+              child: Container(
+                height: 50,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: const [
+                    Icon(Icons.camera_alt),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Text("Take Photo", style: TextStyle(color: Colors.black),),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
