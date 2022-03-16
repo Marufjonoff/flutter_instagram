@@ -12,6 +12,7 @@ class FeedPage extends StatefulWidget {
 class _FeedPageState extends State<FeedPage> {
 
   bool isLike = false;
+
   final imageList = [
     "https://i.pinimg.com/originals/e3/0e/f7/e30ef76f381156b63bb4ff6474e177db.jpg",
     'https://wallpaperaccess.com/full/5707282.jpg',
@@ -158,33 +159,43 @@ class _FeedPageState extends State<FeedPage> {
 
                             // #user info
                             Row(
-                              children: const [
+                              children:  [
 
                                 // #user image
-                                SizedBox(
+                                const SizedBox(
                                   child: CircleAvatar(
-                                    radius: 28,
+                                    radius: 22,
                                     backgroundColor: Colors.red,
                                     child: CircleAvatar(
                                       backgroundColor: Colors.white,
-                                      radius: 26,
+                                      radius: 20,
                                       child: CircleAvatar(
-                                        radius: 24,
+                                        radius: 18,
                                         foregroundImage: AssetImage("assets/images/img_1.png"),
                                       ),
                                     ),
                                   ),
-                                  height: 56,
-                                  width: 56,
+                                  height: 44,
+                                  width: 44,
                                 ),
 
                                 //
-                                SizedBox(
+                                const SizedBox(
                                   width: 10,
                                 ),
 
                                 // #user name
-                                Text("Yakasara Murito", style: TextStyle(color: Colors.black),),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text("Yakasara Murito", style: TextStyle(color: Colors.black),),
+                                    const SizedBox(
+                                      height: 2,
+                                    ),
+                                    Text(DateTime.now().toString().substring(0, 16), style: const TextStyle(color: Colors.black),),
+                                  ],
+                                ),
                               ],
                             ),
 
@@ -221,24 +232,25 @@ class _FeedPageState extends State<FeedPage> {
                             // #user info
                             Row(
                               children: [
+
                                 IconButton(
                                   icon: Icon(isLike ? Icons.favorite : Icons.favorite_border, color: isLike ? Colors.red : Colors.black.withOpacity(0.9),),
                                   onPressed: (){},
-                                  splashRadius: 10,
+                                  splashRadius: 15,
                                   padding: const EdgeInsets.only(left: 5, right: 10),
                                   constraints: const BoxConstraints(),
                                 ),
                                 IconButton(
                                   icon: Icon(FontAwesomeIcons.comment, color: Colors.black.withOpacity(0.9),),
                                   onPressed: (){},
-                                  splashRadius: 10,
+                                  splashRadius: 15,
                                   padding: const EdgeInsets.symmetric(horizontal: 10),
                                   constraints: const BoxConstraints(),
                                 ),
                                 IconButton(
                                   icon: Icon(FontAwesomeIcons.paperPlane, color: Colors.black.withOpacity(0.9), size: 26,),
                                   onPressed: (){},
-                                  splashRadius: 10,
+                                  splashRadius: 15,
                                   padding: const EdgeInsets.symmetric(horizontal: 10),
                                   constraints: const BoxConstraints(),
                                 ),
@@ -248,7 +260,7 @@ class _FeedPageState extends State<FeedPage> {
                             IconButton(
                               icon: Icon(Icons.bookmark_border_sharp, color: Colors.black.withOpacity(0.9),),
                               onPressed: (){},
-                              splashRadius: 10,
+                              splashRadius: 15,
                               padding: const EdgeInsets.only(right: 5),
                               constraints: const BoxConstraints(),
                             ),

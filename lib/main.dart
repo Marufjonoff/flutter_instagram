@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_instagram/pages/control_page.dart';
 import 'package:flutter_instagram/pages/feed_page.dart';
 import 'package:flutter_instagram/pages/header_page.dart';
 import 'package:flutter_instagram/pages/likes_page.dart';
@@ -33,8 +34,9 @@ class MyApp extends StatelessWidget {
           titleTextStyle: TextStyle(color: Colors.black, fontSize: 20),
         )
       ),
-      home: const SplashPage(),
+      home: const ControlPage(),
       routes: {
+        ControlPage.id: (context) => ControlPage(),
         SplashPage.id: (context) => SplashPage(),
         SignInPage.id: (context) => SignInPage(),
         SignUpPage.id: (context) => SignUpPage(),
