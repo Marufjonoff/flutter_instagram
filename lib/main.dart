@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
           titleTextStyle: TextStyle(color: Colors.black, fontSize: 20),
         )
       ),
-      home: const ControlPage(),
+      home: const ProfilePage(),
       routes: {
         ControlPage.id: (context) => ControlPage(),
         SplashPage.id: (context) => SplashPage(),

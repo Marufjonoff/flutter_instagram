@@ -16,8 +16,8 @@ class HeaderPage extends StatefulWidget {
 }
 
 class _HeaderPageState extends State<HeaderPage> {
-  final PageController _pageController = PageController();
-  late int _currentTap = 2;
+  final PageController _pageController = PageController(initialPage: 0);
+  late int _currentTap = 0;
 
   @override
   Widget build(BuildContext context) {

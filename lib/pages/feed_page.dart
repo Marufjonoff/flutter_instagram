@@ -22,7 +22,9 @@ class _FeedPageState extends State<FeedPage> {
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpJAs_B5ADglytUXKarCh5AACVfF2QROpUGmfGT2P02yCf-5bse8QDuc7TXzgciMJj0fs&usqp=CAU",
   ];
 
-
+  int likes = 12;
+  String content = "Hello I'm Flutter developer. How old are you?. I'm from Uzbekistan. My name is Obidjon";
+  String username = "yakasara_murito";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,25 +47,25 @@ class _FeedPageState extends State<FeedPage> {
             // #story
             Container(
               color: Colors.white,
-              height: 126,
+              height: 110,
               width: MediaQuery.of(context).size.width,
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: [
                   // #story my
                   Padding(
-                    padding: const EdgeInsets.only(left: 15, right: 7.5, top: 10, bottom: 10),
+                    padding: const EdgeInsets.only(left: 14, right: 7, top: 6, bottom: 6),
                     child: Column(
                       children: [
                         Stack(
                           children: const [
                              SizedBox(
                               child: CircleAvatar(
-                                radius: 36,
+                                radius: 32,
                                 foregroundImage: AssetImage("assets/images/img_1.png"),
                               ),
-                              height: 72,
-                              width: 72,
+                              height: 64,
+                              width: 64,
                             ),
                             Positioned(
                               bottom: 0,
@@ -82,15 +84,15 @@ class _FeedPageState extends State<FeedPage> {
                         ),
 
                         const SizedBox(
-                          height: 10,
+                          height: 11,
                         ),
-                        const Text("Your story", style: TextStyle(color: Colors.black),)
+                        const Text("Your story", style: TextStyle(color: Colors.black, fontSize: 14),)
                       ],
                     ),
                   ),
                   // #story
                   SizedBox(
-                    height: 126,
+                    height: 110,
                     child: ListView.builder(
                       itemCount: 10,
                       scrollDirection: Axis.horizontal,
@@ -98,32 +100,32 @@ class _FeedPageState extends State<FeedPage> {
                       shrinkWrap: true,
                       itemBuilder: (context, index){
                         return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 7.5, vertical: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 6),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: const [
                               SizedBox(
                                 child: CircleAvatar(
-                                  radius: 40,
+                                  radius: 36,
                                   backgroundColor: Colors.red,
                                   child: CircleAvatar(
                                     backgroundColor: Colors.white,
-                                    radius: 38,
+                                    radius: 34,
                                     child: CircleAvatar(
-                                      radius: 36,
+                                      radius: 32,
                                       foregroundImage: AssetImage("assets/images/img_1.png"),
                                     ),
                                   ),
                                 ),
-                                height: 80,
-                                width: 80,
+                                height: 72,
+                                width: 72,
                               ),
 
                               SizedBox(
                                 height: 3,
                               ),
-                              Text("Yamamoto", style: TextStyle(color: Colors.black),)
+                              Text("Yamamoto", style: TextStyle(color: Colors.black, fontSize: 14),)
                             ],
                           ),
                         );
@@ -133,7 +135,6 @@ class _FeedPageState extends State<FeedPage> {
                 ],
               ),
             ),
-
             //
             Divider(
               height: 1.5,
@@ -149,6 +150,7 @@ class _FeedPageState extends State<FeedPage> {
                 return SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
 
                       Padding(
@@ -159,43 +161,33 @@ class _FeedPageState extends State<FeedPage> {
 
                             // #user info
                             Row(
-                              children:  [
+                              children:  const [
 
                                 // #user image
-                                const SizedBox(
+                                SizedBox(
                                   child: CircleAvatar(
-                                    radius: 22,
+                                    radius: 18,
                                     backgroundColor: Colors.red,
                                     child: CircleAvatar(
                                       backgroundColor: Colors.white,
-                                      radius: 20,
+                                      radius: 16,
                                       child: CircleAvatar(
-                                        radius: 18,
+                                        radius: 14,
                                         foregroundImage: AssetImage("assets/images/img_1.png"),
                                       ),
                                     ),
                                   ),
-                                  height: 44,
-                                  width: 44,
+                                  height: 36,
+                                  width: 36,
                                 ),
 
                                 //
-                                const SizedBox(
+                                SizedBox(
                                   width: 10,
                                 ),
 
                                 // #user name
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text("Yakasara Murito", style: TextStyle(color: Colors.black),),
-                                    const SizedBox(
-                                      height: 2,
-                                    ),
-                                    Text(DateTime.now().toString().substring(0, 16), style: const TextStyle(color: Colors.black),),
-                                  ],
-                                ),
+                                Text("Yakasara Murito", style: TextStyle(color: Colors.black, fontSize: 14),),
                               ],
                             ),
 
@@ -223,6 +215,7 @@ class _FeedPageState extends State<FeedPage> {
                         },
                       ),
 
+                      // button
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                         child: Row(
@@ -267,6 +260,37 @@ class _FeedPageState extends State<FeedPage> {
                           ],
                         ),
                       ),
+
+                      // likes
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                        child: Text("${likes.toString()} likes", style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black),),
+                      ),
+
+                      //content
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          child: RichText(
+                            text: TextSpan(
+                              style: const TextStyle(overflow: TextOverflow.ellipsis),
+                              children: [
+                                TextSpan(
+                                  text: "$username ",
+                                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black,)
+                                ),
+                                TextSpan(
+                                    text: content,
+                                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: Colors.black87,)
+                                ),
+                              ]
+                            ),
+                          ),
+                          height: 35,
+                        ),
+                      )
+
                     ],
                   ),
                 );

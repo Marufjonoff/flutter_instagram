@@ -12,8 +12,14 @@ class ControlPage extends StatefulWidget {
 }
 
 class _ControlPageState extends State<ControlPage> {
-  final PageController _pageController = PageController();
-  int _currentTap = 2;
+  final PageController _pageController = PageController(initialPage: 1);
+  int _currentTap = 0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
