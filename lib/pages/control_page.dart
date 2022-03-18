@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_instagram/pages/control_pages/camera_page.dart';
+import 'package:flutter_instagram/pages/control_pages/chating_page.dart';
+import 'package:flutter_instagram/pages/feed_page.dart';
 import 'package:flutter_instagram/pages/header_page.dart';
-import 'package:flutter_instagram/pages/likes_page.dart';
-import 'package:flutter_instagram/pages/search_page.dart';
+
 
 class ControlPage extends StatefulWidget {
   const ControlPage({Key? key}) : super(key: key);
@@ -32,9 +34,9 @@ class _ControlPageState extends State<ControlPage> {
           });
         },
         children: const <Widget>[
-          LikesPage(),
+          CameraPage(),
           HeaderPage(),
-          SearchPage(),
+          ChatPage(),
         ],
       ),
     );

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_instagram/pages/control_page.dart';
 import 'package:flutter_instagram/pages/header_page.dart';
 import 'package:flutter_instagram/pages/sign_in_page.dart';
+import 'package:flutter_instagram/pages/views/validate_textField.dart';
+import 'package:flutter_instagram/services/utils.dart';
 import 'package:flutter_instagram/widget_catalogs/glassmorphism_widget.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -11,7 +14,7 @@ class SignUpPage extends StatefulWidget {
   _SignUpPageState createState() => _SignUpPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _SignUpPageState extends State<SignUpPage> with InputValidation {
   TextEditingController fullNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -46,7 +49,9 @@ class _SignUpPageState extends State<SignUpPage> {
                 children: [
 
                   // #text
-                  const Text('Instagram', style: TextStyle(fontFamily: 'Billabong', fontSize: 25),),
+                  const Text(
+                    'Instagram',
+                    style: TextStyle(fontFamily: 'Billabong', fontSize: 25),),
 
                   const SizedBox(
                     height: 25,
@@ -60,7 +65,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       end: 0.4,
                       child: TextFormField(
                         controller: fullNameController,
-                        keyboardType: TextInputType.emailAddress,
+                        keyboardType: TextInputType.name,
                         decoration: const InputDecoration(
                             border: InputBorder.none,
                             hintText: 'Fullname',
@@ -82,7 +87,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       end: 0.4,
                       child: TextFormField(
                         controller: emailController,
-                        keyboardType: TextInputType.visiblePassword,
+                        keyboardType: TextInputType.emailAddress,
                         decoration: const InputDecoration(
                             border: InputBorder.none,
                             hintText: 'Email',
@@ -150,15 +155,19 @@ class _SignUpPageState extends State<SignUpPage> {
                       end: 0.0,
                       child: MaterialButton(
                         onPressed: (){
-                          Navigator.pushReplacementNamed(context, HeaderPage.id);
+                          if(isEmailValid(emailController.text.trim())
+                          && isPasswordValid(passwordController.text.trim())
+                          && isConfirmPasswordValid(confirmPasswordController.text.trim())) {
+                            Navigator.pushReplacementNamed(context, ControlPage.id);
+                          } else {
+                            Utils.showToast(context, "Email or password invalid");
+                          }
                         },
                         minWidth: MediaQuery.of(context).size.width,
                         child: const Text("Sign Up"),
                       ),
                     ),
                   ),
-
-
                 ],
               ),
             ),
@@ -175,7 +184,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         onPressed: (){
                           Navigator.pushNamed(context, SignInPage.id);
                         },
-                        child: Text("Sign In"),
+                        child: const Text("Sign In"),
                       )
                     ],
                   )

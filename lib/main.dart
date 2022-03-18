@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_instagram/pages/control_page.dart';
 import 'package:flutter_instagram/pages/feed_page.dart';
@@ -10,7 +11,9 @@ import 'package:flutter_instagram/pages/sign_up_page.dart';
 import 'package:flutter_instagram/pages/splash_page.dart';
 import 'package:flutter_instagram/pages/upload_page.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -34,7 +37,7 @@ class MyApp extends StatelessWidget {
           titleTextStyle: TextStyle(color: Colors.black, fontSize: 20),
         )
       ),
-      home: const ControlPage(),
+      home: const SplashPage(),
       routes: {
         ControlPage.id: (context) => ControlPage(),
         SplashPage.id: (context) => SplashPage(),

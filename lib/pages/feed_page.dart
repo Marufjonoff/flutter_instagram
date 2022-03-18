@@ -1,5 +1,6 @@
 import 'package:awesome_icons/awesome_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class FeedPage extends StatefulWidget {
   const FeedPage({Key? key}) : super(key: key);
@@ -25,6 +26,14 @@ class _FeedPageState extends State<FeedPage> {
   int likes = 12;
   String content = "Hello I'm Flutter developer. How old are you?. I'm from Uzbekistan. My name is Obidjon";
   String username = "yakasara_murito";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print(DateTime.now().toString());
+    print(DateTime.now().toString().substring(13, 16));
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,6 +66,7 @@ class _FeedPageState extends State<FeedPage> {
                     padding: const EdgeInsets.only(left: 14, right: 7, top: 6, bottom: 6),
                     child: Column(
                       children: [
+
                         Stack(
                           children: const [
                              SizedBox(
@@ -204,9 +214,18 @@ class _FeedPageState extends State<FeedPage> {
 
                       // #content
                       GestureDetector(
-                        child: Image(
-                          image: NetworkImage(imageList[index]),
-                          fit: BoxFit.cover,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: NetworkImage(imageList[index]),
+                              fit: BoxFit.cover,
+                            )
+                          ),
+                          height: MediaQuery.of(context).size.height * 0.5,
+                          width: MediaQuery.of(context).size.width,
+                          child: Center(
+                            child: isLike ? Lottie.asset("assets/anime/favorite.json", repeat: false, width: 100, height: 100) : const SizedBox.shrink(),
+                          ),
                         ),
                         onDoubleTap: (){
                           setState(() {

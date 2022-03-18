@@ -94,6 +94,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           const SizedBox(
                             width: 15,
                           ),
+
                           // follower
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -227,6 +228,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 height: 1.0,
                 color: Colors.white,
               ),
+
               SizedBox(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height*0.5,
