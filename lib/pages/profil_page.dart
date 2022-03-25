@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_instagram/services/auth_service.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -39,7 +40,8 @@ class _ProfilePageState extends State<ProfilePage> {
             children: [
               const Text("mr.yamata", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),),
               IconButton(
-                onPressed: (){},
+                onPressed: (){
+                },
                 splashRadius: 10,
                 icon: const Icon(Icons.keyboard_arrow_down_rounded, color: Colors.black,),
                 padding: EdgeInsets.zero,
@@ -48,16 +50,25 @@ class _ProfilePageState extends State<ProfilePage> {
             ],
           ),
           actions: [
+
+            // log out user
             IconButton(
-              onPressed: (){},
+              onPressed: (){
+                AuthService.signOutUser(context);
+              },
               icon: const Icon(Icons.add_box_outlined, color: Colors.black,),
               padding: EdgeInsets.zero,
             ),
+
+            // delete account
             IconButton(
-              onPressed: (){},
+              onPressed: (){
+                AuthService.deleteAccount(context);
+              },
               icon: const Icon(Icons.dehaze, color: Colors.black,),
               padding: const EdgeInsets.only(right: 10),
             ),
+
           ],
         ),
         body: SingleChildScrollView(

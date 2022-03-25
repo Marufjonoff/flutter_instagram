@@ -1,5 +1,6 @@
 import 'package:awesome_icons/awesome_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_instagram/pages/likes_page.dart';
 import 'package:lottie/lottie.dart';
 
 class FeedPage extends StatefulWidget {
@@ -31,9 +32,26 @@ class _FeedPageState extends State<FeedPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    print(DateTime.now().toString());
-    print(DateTime.now().toString().substring(13, 16));
   }
+
+  Route _createRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => const LikesPage(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(1.0, 0.0);
+        const end = Offset.zero;
+        const curve = Curves.ease;
+
+        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,7 +60,10 @@ class _FeedPageState extends State<FeedPage> {
         actions: [
           IconButton(
             icon: Icon(FontAwesomeIcons.facebookMessenger, color: Colors.black.withOpacity(0.9),),
-            onPressed: (){},
+            onPressed: (){
+              Navigator.of(context).push(_createRoute());
+
+            },
             splashRadius: 10,
             padding: const EdgeInsets.only(right: 8),
             constraints: const BoxConstraints(),

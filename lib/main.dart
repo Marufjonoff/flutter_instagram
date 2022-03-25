@@ -1,6 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_instagram/pages/control_page.dart';
 import 'package:flutter_instagram/pages/feed_page.dart';
 import 'package:flutter_instagram/pages/header_page.dart';
 import 'package:flutter_instagram/pages/likes_page.dart';
@@ -39,7 +38,6 @@ class MyApp extends StatelessWidget {
       ),
       home: const SplashPage(),
       routes: {
-        ControlPage.id: (context) => ControlPage(),
         SplashPage.id: (context) => SplashPage(),
         SignInPage.id: (context) => SignInPage(),
         SignUpPage.id: (context) => SignUpPage(),
