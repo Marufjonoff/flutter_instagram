@@ -1,36 +1,57 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_instagram/models/post_model.dart';
 import 'package:flutter_instagram/models/user_model.dart';
 import 'package:flutter_instagram/services/pref_service.dart';
 
 class DataService {
 
-  //
+  /////// -------- FireBase instanse -----------/////////
+
   static final instance = FirebaseFirestore.instance;
 
-  ///
-  static const String userFolder = "users";
+  /////// -------- Folder ------------ /////////
 
-  // User store
+  static const String userFolder = "users";
+  static const String postsFolder = "posts";
+  static const String feedsFolder = "feeds";
+  static const String followingsFolder = "followings";
+  static const String followersFolder = "followers";
+
+  ///////-------- User store ------- /////////
+
   static Future storeUser(Users user) async {
     user.uid = (await Prefs.load(StorageKeys.UID))!;
     return instance.collection(userFolder).doc(user.uid).set(user.toJson());
   }
 
-  // User load
+  ///////------- User load ------- /////////
+
   static Future<Users> loadUser() async {
     String uid = (await Prefs.load(StorageKeys.UID))!;
     var value = await instance.collection(userFolder).doc(uid).get();
+
+    Users user = Users.fromJson(value.data()!);
+
+
+    var querySnapshot1 = await instance.collection(userFolder).doc(uid).collection(followersFolder).get();
+    user.followersCount = querySnapshot1.docs.length;
+
+    var querySnapshot2 = await instance.collection(userFolder).doc(uid).collection(followingsFolder).get();
+    user.followingCount = querySnapshot2.docs.length;
+
     return Users.fromJson(value.data()!);
   }
 
-  // User update
+  ///////---------- Update User ------- /////////
+
   static Future updateUser(Users user) async {
     String uid = (await Prefs.load(StorageKeys.UID))!;
     return instance.collection(userFolder).doc(uid).update(user.toJson());
   }
 
-  // User search
+  ///////---------- User search ------- /////////
+
   static Future<List<Users>> searchUsers(String keyword) async {
     List<Users> users = [];
     var querySnapshot = await instance.collection(userFolder).orderBy("fullname").startAt([keyword]).get();
@@ -44,5 +65,170 @@ class DataService {
     }
 
     return users;
+  }
+
+  // Post //
+
+  ///////---------- Store Post ------- ////////
+
+  static Future<Post> storePost(Post post) async {
+
+    // filled post
+    Users me = await loadUser();
+    post.uid = me.uid;
+    post.fullName = me.fullName;
+    post.imageUser = me.imageUrl;
+    post.createdDate = DateTime.now().toString();
+
+    String postId = instance.collection(userFolder).doc(me.uid).collection(postsFolder).doc().id;
+    post.id = postId;
+
+    await instance.collection(userFolder).doc(me.uid).collection(postsFolder).doc(postId).set(post.toJson());
+    return post;
+  }
+
+  ///// ---------- Store feed ---------- ////////
+
+  static Future<Post> storeFeed(Post post) async {
+    await instance.collection(userFolder).doc(post.uid).collection(feedsFolder).doc(post.id).set(post.toJson());
+    return post;
+  }
+
+  ////// --------- Load feed --------- ////////
+
+  static Future<List<Post>> loadFeeds() async {
+    List<Post> posts = [];
+    String uid = (await Prefs.load(StorageKeys.UID))!;
+    var querySnapshot = await instance.collection(userFolder).doc(uid).collection(feedsFolder).get();
+
+    for (var element in querySnapshot.docs) {
+      Post post = Post.fromJson(element.data());
+      if(post.uid == uid) post.isMine = true;
+      posts.add(post);
+    }
+
+    return posts;
+  }
+
+  ////// ---------- Load posts --------- ////////
+
+  static Future<List<Post>> loadPosts() async {
+    List<Post> posts = [];
+    String uid = (await Prefs.load(StorageKeys.UID))!;
+    var querySnapshot = await instance.collection(userFolder).doc(uid).collection(postsFolder).get();
+
+    for (var element in querySnapshot.docs) {
+      Post post = Post.fromJson(element.data());
+      posts.add(post);
+    }
+
+    return posts;
+  }
+
+  ////// ---------- Like post for feed Page -----------///////
+
+  static Future<Post> likePost(Post post, bool like) async {
+    String uid = (await Prefs.load(StorageKeys.UID))!;
+    post.isLiked = like;
+    
+    await instance.collection(userFolder).doc(uid).collection(feedsFolder).doc(post.id).update(post.toJson());
+    
+    if(uid == post.uid) {
+      await instance.collection(userFolder).doc(uid).collection(postsFolder).doc(post.uid).set(post.toJson());
+    }
+    return post;
+  }
+
+  ////// ----------- Like load ------- ////////
+
+  static Future<List<Post>> loadLike() async {
+    String uid = (await Prefs.load(StorageKeys.UID))!;
+
+    List<Post> posts = [];
+    var querySnapshot = await instance.collection(userFolder).doc(uid).collection(feedsFolder).where("isLiked", isEqualTo: true).get();
+
+    for(var element in querySnapshot.docs) {
+      Post post = Post.fromJson(element.data());
+      if(post.uid == uid) post.isMine = true;
+      posts.add(post);
+    }
+    return posts;
+  }
+
+  ////// --------- follower and following ----------////////
+
+  static Future<Users> followUser(Users someone) async {
+    Users me = await loadUser();
+
+    await instance.collection(userFolder).doc(me.uid).collection(followingsFolder).doc(someone.uid).set(someone.toJson());
+
+    await instance.collection(userFolder).doc(someone.uid).collection(followersFolder).doc(me.uid).set(me.toJson());
+
+    return someone;
+  }
+
+  ////// --------- unfollow ----------////////
+
+  static Future<Users> unfollow(Users someone) async {
+    Users me = await loadUser();
+
+    await instance.collection(userFolder).doc(me.uid).collection(followingsFolder).doc(someone.uid).delete();
+
+    await instance.collection(userFolder).doc(someone.uid).collection(followersFolder).doc(me.uid).delete();
+
+    return someone;
+  }
+
+  /////// --------- Store Posts to my feed ------- ////////
+
+  static Future storePostsToMyFeed(Users someone) async {
+
+
+    List<Post> posts = [];
+
+    var querySnapshot = await instance.collection(userFolder).doc(someone.uid).collection(postsFolder).get();
+
+    for(var item in querySnapshot.docs) {
+      Post post = Post.fromJson(item.data());
+      post.isLiked = false;
+      posts.add(post);
+    }
+
+    for(Post post in posts) {
+      storePost(post);
+    }
+  }
+
+  ///////// ---------- Remove posts from feed ----------- //////////
+
+  static Future removePostsFromMyFeed(Users someone) async {
+
+    List<Post> posts = [];
+    var querySnapshot = await instance.collection(userFolder).doc(someone.uid).collection(postsFolder).get();
+
+    for(var item in querySnapshot.docs) {
+      Post post = Post.fromJson(item.data());
+      posts.add(post);
+    }
+
+    for(Post post in posts) {
+      removeFeed(post);
+    }
+  }
+
+  ////////// ---------- Remove feed ------- ////////////
+
+  static Future removeFeed(Post post) async {
+    String uid = (await Prefs.load(StorageKeys.UID))!;
+
+    return await instance.collection(userFolder).doc(uid).collection(feedsFolder).doc(post.id).delete();
+  }
+
+  ////////// ---------- Remove post ------- ////////////
+
+  static Future removePost(Post post) async {
+    await removeFeed(post);
+
+    return await instance.collection(userFolder).doc(post.uid).collection(postsFolder).doc(post.id).delete();
   }
 }

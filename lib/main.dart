@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_instagram/pages/feed_page.dart';
 import 'package:flutter_instagram/pages/header_page.dart';
 import 'package:flutter_instagram/pages/likes_page.dart';
-import 'package:flutter_instagram/pages/profil_page.dart';
+import 'package:flutter_instagram/pages/profile_page.dart';
 import 'package:flutter_instagram/pages/search_page.dart';
 import 'package:flutter_instagram/pages/sign_in_page.dart';
 import 'package:flutter_instagram/pages/sign_up_page.dart';

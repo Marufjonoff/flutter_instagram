@@ -1,9 +1,8 @@
-import 'package:awesome_icons/awesome_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_instagram/pages/feed_page.dart';
 import 'package:flutter_instagram/pages/likes_page.dart';
-import 'package:flutter_instagram/pages/profil_page.dart';
+import 'package:flutter_instagram/pages/profile_page.dart';
 import 'package:flutter_instagram/pages/search_page.dart';
 import 'package:flutter_instagram/pages/upload_page.dart';
 
@@ -16,7 +15,7 @@ class HeaderPage extends StatefulWidget {
 }
 
 class _HeaderPageState extends State<HeaderPage> {
-  final PageController _pageController = PageController(initialPage: 0);
+  final PageController _pageController = PageController();
   late int _currentTap = 0;
 
   @override

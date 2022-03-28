@@ -1,7 +1,10 @@
 import 'package:awesome_icons/awesome_icons.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_instagram/models/post_model.dart';
+import 'package:flutter_instagram/models/user_model.dart';
 import 'package:flutter_instagram/pages/likes_page.dart';
-import 'package:lottie/lottie.dart';
+import 'package:flutter_instagram/services/data_service.dart';
 
 class FeedPage extends StatefulWidget {
   const FeedPage({Key? key}) : super(key: key);
@@ -12,26 +15,96 @@ class FeedPage extends StatefulWidget {
 }
 
 class _FeedPageState extends State<FeedPage> {
-
-  bool isLike = false;
-
-  final imageList = [
-    "https://i.pinimg.com/originals/e3/0e/f7/e30ef76f381156b63bb4ff6474e177db.jpg",
-    'https://wallpaperaccess.com/full/5707282.jpg',
-    "https://www.teahub.io/photos/full/10-105274_tokyo-ghoul-wallpaper-3d.jpg",
-    "https://wallpapershome.com/images/pages/pic_v/15972.jpg",
-    "https://justanimehype.com/wp-content/uploads/2021/11/Gojo-Satoru-from-Jujutsu-Kaisen-1024x576.jpg",
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpJAs_B5ADglytUXKarCh5AACVfF2QROpUGmfGT2P02yCf-5bse8QDuc7TXzgciMJj0fs&usqp=CAU",
-  ];
-
-  int likes = 12;
-  String content = "Hello I'm Flutter developer. How old are you?. I'm from Uzbekistan. My name is Obidjon";
-  String username = "yakasara_murito";
+  bool isLoading = true;
+  List<Post> items = [];
+  Users? users;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _fireLoadFeeds();
+    _apiLoadUser();
+  }
+
+  /////// --------- For user load ------ /////////
+
+  void _apiLoadUser() async {
+    setState(() {
+      isLoading = true;
+    });
+    DataService.loadUser().then((value) => _showUserInfo(value));
+  }
+
+  /////// --------- Show user info --------- ////////
+
+  void _showUserInfo(Users user) {
+    setState(() {
+      users = user;
+      isLoading = false;
+    });
+  }
+
+  ////// ------- Fire load feeds ----- ////////
+
+  void _fireLoadFeeds() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    DataService.loadFeeds().then((posts) => {
+      _resLoadFeeds(posts),
+    });
+  }
+
+  ///// ------- Res load feeds ---- /////
+
+  void _resLoadFeeds(List<Post> posts) {
+    setState(() {
+      isLoading = false;
+      items = posts;
+    });
+  }
+
+  //// ----- Fire post like ----- /////
+
+  void _firePostLike(Post post) async {
+    setState(() {
+      isLoading  = true;
+    });
+
+    await DataService.likePost(post, true);
+
+    setState(() {
+      isLoading = false;
+      post.isLiked = true;
+    });
+  }
+
+  //// ----- Fire post unlike ----- ////
+
+  void _firePostUnlike(Post post) async {
+    setState(() {
+      isLoading  = true;
+    });
+
+    await DataService.likePost(post, false);
+
+    setState(() {
+      isLoading = false;
+      post.isLiked = false;
+    });
+  }
+
+  //// ----- update like ----- ////
+
+  void updateLike(Post post) {
+    if(post.isLiked) {
+      _firePostLike(post);
+    }
+    if(post.isLiked) {
+      _firePostLike(post);
+    }
   }
 
   Route _createRoute() {
@@ -82,6 +155,7 @@ class _FeedPageState extends State<FeedPage> {
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: [
+
                   // #story my
                   Padding(
                     padding: const EdgeInsets.only(left: 14, right: 7, top: 6, bottom: 6),
@@ -89,16 +163,28 @@ class _FeedPageState extends State<FeedPage> {
                       children: [
 
                         Stack(
-                          children: const [
+                          children: [
+
                              SizedBox(
-                              child: CircleAvatar(
-                                radius: 32,
-                                foregroundImage: AssetImage("assets/images/img_1.png"),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(32.0),
+                                child: users?.imageUrl == null || users!.imageUrl!.isEmpty ? const Image(
+                                  image: AssetImage("assets/images/img.jpg"),
+                                  fit: BoxFit.cover,
+                                  height: 32,
+                                  width: 32,
+                                ) : Image(
+                                  image: NetworkImage(users!.imageUrl!),
+                                  fit: BoxFit.cover,
+                                  height: 32,
+                                  width: 32,
+                                ),
                               ),
                               height: 64,
                               width: 64,
                             ),
-                            Positioned(
+
+                            const Positioned(
                               bottom: 0,
                               right: 3,
                               child: CircleAvatar(
@@ -117,15 +203,17 @@ class _FeedPageState extends State<FeedPage> {
                         const SizedBox(
                           height: 11,
                         ),
+
                         const Text("Your story", style: TextStyle(color: Colors.black, fontSize: 14),)
                       ],
                     ),
                   ),
+
                   // #story
                   SizedBox(
                     height: 110,
                     child: ListView.builder(
-                      itemCount: 10,
+                      itemCount: items.length,
                       scrollDirection: Axis.horizontal,
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
@@ -135,28 +223,34 @@ class _FeedPageState extends State<FeedPage> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
-                            children: const [
+                            children: [
                               SizedBox(
                                 child: CircleAvatar(
                                   radius: 36,
                                   backgroundColor: Colors.red,
-                                  child: CircleAvatar(
-                                    backgroundColor: Colors.white,
-                                    radius: 34,
-                                    child: CircleAvatar(
-                                      radius: 32,
-                                      foregroundImage: AssetImage("assets/images/img_1.png"),
-                                    ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(34),
+                                    child: users?.imageUrl != null ? CachedNetworkImage(
+                                      height: 68,
+                                      width: 68,
+                                      imageUrl: users!.imageUrl!,
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) => const Image(image: AssetImage("assets/images/img.jpg")),
+                                      errorWidget: (context, url, error) => const Icon(Icons.error),
+                                    ) : const Image(image: AssetImage("assets/images/img.jpg"), fit: BoxFit.cover,
+
+                                    height: 68,
+                                    width: 68,),
                                   ),
                                 ),
                                 height: 72,
                                 width: 72,
                               ),
 
-                              SizedBox(
+                              const SizedBox(
                                 height: 3,
                               ),
-                              Text("Yamamoto", style: TextStyle(color: Colors.black, fontSize: 14),)
+                              Text(users?.fullName == null ? "Hello " : users!.fullName , style: const TextStyle(color: Colors.black, fontSize: 14),)
                             ],
                           ),
                         );
@@ -166,14 +260,16 @@ class _FeedPageState extends State<FeedPage> {
                 ],
               ),
             ),
+
             //
             Divider(
               height: 1.5,
               color: Colors.grey.shade500,
             ),
+
             // #content
             ListView.builder(
-              itemCount: imageList.length,
+              itemCount: items.length,
               scrollDirection: Axis.vertical,
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
@@ -192,19 +288,25 @@ class _FeedPageState extends State<FeedPage> {
 
                             // #user info
                             Row(
-                              children:  const [
+                              children:  [
 
                                 // #user image
                                 SizedBox(
                                   child: CircleAvatar(
                                     radius: 18,
                                     backgroundColor: Colors.red,
-                                    child: CircleAvatar(
-                                      backgroundColor: Colors.white,
-                                      radius: 16,
-                                      child: CircleAvatar(
-                                        radius: 14,
-                                        foregroundImage: AssetImage("assets/images/img_1.png"),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(16.0),
+                                      child: items[index].imageUser != null ? CachedNetworkImage(
+                                        height: 32,
+                                        width: 32,
+                                        fit: BoxFit.cover,
+                                        imageUrl: items[index].imageUser!,
+                                        placeholder: (context, url) => const Image(image: AssetImage("assets/images/img.jpg")),
+                                        errorWidget: (context, url, error) => const Icon(Icons.error),
+                                      ) : const Image(image: AssetImage("assets/images/img.jpg"), height: 32,
+                                        width: 32,
+                                        fit: BoxFit.cover,
                                       ),
                                     ),
                                   ),
@@ -213,12 +315,12 @@ class _FeedPageState extends State<FeedPage> {
                                 ),
 
                                 //
-                                SizedBox(
+                                const SizedBox(
                                   width: 10,
                                 ),
 
                                 // #user name
-                                Text("Yakasara Murito", style: TextStyle(color: Colors.black, fontSize: 14),),
+                                Text(items[index].fullName, style: const TextStyle(color: Colors.black, fontSize: 14),),
                               ],
                             ),
 
@@ -235,22 +337,17 @@ class _FeedPageState extends State<FeedPage> {
 
                       // #content
                       GestureDetector(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: NetworkImage(imageList[index]),
-                              fit: BoxFit.cover,
-                            )
-                          ),
-                          height: MediaQuery.of(context).size.height * 0.5,
-                          width: MediaQuery.of(context).size.width,
-                          child: Center(
-                            child: isLike ? Lottie.asset("assets/anime/favorite.json", repeat: false, width: 100, height: 100) : const SizedBox.shrink(),
-                          ),
-                        ),
+                        child: CachedNetworkImage(
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.width,
+                                fit: BoxFit.cover,
+                                imageUrl: items[index].postImage,
+                                placeholder: (context, url) => Container(color: Colors.grey,),
+                                errorWidget: (context, url, error) => const Icon(Icons.error),
+                                ),
                         onDoubleTap: (){
                           setState(() {
-                            isLike = true;
+                            _firePostLike(items[index]);
                           });
                         },
                       ),
@@ -267,8 +364,10 @@ class _FeedPageState extends State<FeedPage> {
                               children: [
 
                                 IconButton(
-                                  icon: Icon(isLike ? Icons.favorite : Icons.favorite_border, color: isLike ? Colors.red : Colors.black.withOpacity(0.9),),
-                                  onPressed: (){},
+                                  icon: Icon(items[index].isLiked ? Icons.favorite : Icons.favorite_border, color: items[index].isLiked ? Colors.red : Colors.black.withOpacity(0.9),),
+                                  onPressed: (){
+                                    updateLike(items[index]);
+                                  },
                                   splashRadius: 15,
                                   padding: const EdgeInsets.only(left: 5, right: 10),
                                   constraints: const BoxConstraints(),
@@ -304,7 +403,7 @@ class _FeedPageState extends State<FeedPage> {
                       // likes
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                        child: Text("${likes.toString()} likes", style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black),),
+                        child: Text("${items[index].isLiked} likes", style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black),),
                       ),
 
                       //content
@@ -317,11 +416,11 @@ class _FeedPageState extends State<FeedPage> {
                               style: const TextStyle(overflow: TextOverflow.ellipsis),
                               children: [
                                 TextSpan(
-                                  text: "$username ",
+                                  text: "${items[index].fullName} ",
                                   style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black,)
                                 ),
                                 TextSpan(
-                                    text: content,
+                                    text: items[index].caption,
                                     style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: Colors.black87,)
                                 ),
                               ]
