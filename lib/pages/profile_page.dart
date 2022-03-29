@@ -40,7 +40,7 @@ class _ProfilePageState extends State<ProfilePage> {
     _apiLoadPost();
   }
 
-  /////////// ------------ Image upload from Gallery ------------ ////////////////
+  //// ----- Image upload from Gallery ----- ////
 
   Future pickImage() async {
     try{
@@ -58,7 +58,7 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  /////////// --------- Image upload from Camera ---------- ////////////////
+  //// ----- Image upload from Camera -----////
 
   Future takeImage() async {
     try{
@@ -75,6 +75,8 @@ class _ProfilePageState extends State<ProfilePage> {
       }
     }
   }
+
+  //// ----- Bottom sheet ---- ////
 
   void _showPicker(context) {
     showModalBottomSheet(
@@ -105,7 +107,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  /////// --------- For user load ------ /////////
+  //// ----- For user load ----- ////
   
   void _apiLoadUser() async {
     setState(() {
@@ -114,7 +116,7 @@ class _ProfilePageState extends State<ProfilePage> {
     DataService.loadUser().then((value) => _showUserInfo(value));
   }
   
-  /////// --------- Show user info --------- ////////
+  //// ----- Show user info ----- ////
   
   void _showUserInfo(Users user) {
     setState(() {
@@ -123,7 +125,7 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   } 
   
-  /////// --------- User profile Photo change ------- ///////
+  //// ----- User profile Photo change -----////
   
   void _apiChangePhoto() {
     if(image == null) return;
@@ -134,7 +136,7 @@ class _ProfilePageState extends State<ProfilePage> {
     FileService.uploadImage(image!, FileService.folderUserImg).then((value) => _apiUpdateUser(value));
   }
   
-  //////// -------- Update user imageUrl ------ //////
+  //// ----- Update user imageUrl ----- ////
   
   void _apiUpdateUser(String imgUrl) async {
     setState(() {
@@ -144,7 +146,8 @@ class _ProfilePageState extends State<ProfilePage> {
     await DataService.updateUser(users!);
   }
   
-  //////// -------- For load post ------ /////////
+  //// ----- For load post ----- ////
+
   void _apiLoadPost() {
     DataService.loadPosts().then((posts) => {
       _resLoadPost(posts),
@@ -194,7 +197,7 @@ class _ProfilePageState extends State<ProfilePage> {
             // delete account
             IconButton(
               onPressed: (){
-                AuthService.deleteAccount(context);
+                // AuthService.deleteAccount(context);
               },
               icon: const Icon(Icons.dehaze, color: Colors.black,),
               padding: const EdgeInsets.only(right: 10),

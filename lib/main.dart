@@ -5,6 +5,7 @@ import 'package:flutter_instagram/pages/header_page.dart';
 import 'package:flutter_instagram/pages/likes_page.dart';
 import 'package:flutter_instagram/pages/profile_page.dart';
 import 'package:flutter_instagram/pages/search_page.dart';
+import 'package:flutter_instagram/pages/search_results_page.dart';
 import 'package:flutter_instagram/pages/sign_in_page.dart';
 import 'package:flutter_instagram/pages/sign_up_page.dart';
 import 'package:flutter_instagram/pages/splash_page.dart';
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
         HeaderPage.id: (context) => HeaderPage(),
         FeedPage.id: (context) => FeedPage(),
         SearchPage.id: (context) => SearchPage(),
+        ResultSearchPage.id: (context) => ResultSearchPage(),
         UploadPage.id: (context) => UploadPage(),
         LikesPage.id: (context) => LikesPage(),
         ProfilePage.id: (context) => ProfilePage(),

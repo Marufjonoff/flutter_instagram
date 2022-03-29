@@ -25,32 +25,39 @@ class _FeedPageState extends State<FeedPage> {
     super.initState();
     _fireLoadFeeds();
     _apiLoadUser();
+
   }
 
   /////// --------- For user load ------ /////////
 
   void _apiLoadUser() async {
-    setState(() {
-      isLoading = true;
-    });
+    if(mounted) {
+      setState(() {
+        isLoading = true;
+      });
+    }
     DataService.loadUser().then((value) => _showUserInfo(value));
   }
 
   /////// --------- Show user info --------- ////////
 
   void _showUserInfo(Users user) {
-    setState(() {
-      users = user;
-      isLoading = false;
-    });
+    if(mounted) {
+      setState(() {
+        users = user;
+        isLoading = false;
+      });
+    }
   }
 
   ////// ------- Fire load feeds ----- ////////
 
   void _fireLoadFeeds() async {
-    setState(() {
-      isLoading = true;
-    });
+    if(mounted) {
+      setState(() {
+        isLoading = true;
+      });
+    }
 
     DataService.loadFeeds().then((posts) => {
       _resLoadFeeds(posts),
@@ -60,18 +67,22 @@ class _FeedPageState extends State<FeedPage> {
   ///// ------- Res load feeds ---- /////
 
   void _resLoadFeeds(List<Post> posts) {
-    setState(() {
-      isLoading = false;
-      items = posts;
-    });
+    if(mounted) {
+      setState(() {
+        isLoading = false;
+        items = posts;
+      });
+    }
   }
 
   //// ----- Fire post like ----- /////
 
   void _firePostLike(Post post) async {
-    setState(() {
-      isLoading  = true;
-    });
+    if(mounted) {
+      setState(() {
+        isLoading  = true;
+      });
+    }
 
     await DataService.likePost(post, true);
 
@@ -84,26 +95,31 @@ class _FeedPageState extends State<FeedPage> {
   //// ----- Fire post unlike ----- ////
 
   void _firePostUnlike(Post post) async {
-    setState(() {
-      isLoading  = true;
-    });
+    if(mounted) {
+      setState(() {
+        isLoading  = true;
+      });
+    }
 
     await DataService.likePost(post, false);
 
-    setState(() {
-      isLoading = false;
-      post.isLiked = false;
-    });
+    if(mounted) {
+      setState(() {
+        isLoading = false;
+        post.isLiked = false;
+      });
+    }
   }
 
   //// ----- update like ----- ////
 
   void updateLike(Post post) {
-    if(post.isLiked) {
+    if(!post.isLiked) {
       _firePostLike(post);
     }
-    if(post.isLiked) {
-      _firePostLike(post);
+
+    else {
+      _firePostUnlike(post);
     }
   }
 
@@ -342,13 +358,14 @@ class _FeedPageState extends State<FeedPage> {
                                 height: MediaQuery.of(context).size.width,
                                 fit: BoxFit.cover,
                                 imageUrl: items[index].postImage,
-                                placeholder: (context, url) => Container(color: Colors.grey,),
+                                placeholder: (context, url) => Container(
+                                   width: MediaQuery.of(context).size.width,
+                                  height: MediaQuery.of(context).size.width,
+                                  color: Colors.blueGrey.shade700,),
                                 errorWidget: (context, url, error) => const Icon(Icons.error),
                                 ),
                         onDoubleTap: (){
-                          setState(() {
-                            _firePostLike(items[index]);
-                          });
+                          _firePostLike(items[index]);
                         },
                       ),
 

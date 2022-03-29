@@ -53,8 +53,9 @@ class DataService {
   ///////---------- User search ------- /////////
 
   static Future<List<Users>> searchUsers(String keyword) async {
+    Users user = await loadUser();
     List<Users> users = [];
-    var querySnapshot = await instance.collection(userFolder).orderBy("fullname").startAt([keyword]).get();
+    var querySnapshot = await instance.collection(userFolder).orderBy("fullName").startAt([keyword]).endAt([keyword + '\uf8ff']).get();
 
     if (kDebugMode) {
       print("\nQuery Snapshots => ${querySnapshot.docs.toString()}\n");
@@ -64,6 +65,7 @@ class DataService {
       users.add(Users.fromJson(element.data()));
     }
 
+    users.remove(user);
     return users;
   }
 

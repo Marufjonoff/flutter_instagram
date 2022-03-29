@@ -33,10 +33,12 @@ class _UploadPageState extends State<UploadPage> {
       if (image == null) return;
       final imageTemporary = File(image.path);
       isDeleteImage = true;
-      setState(() {
-        isUpload = true;
-        this.image = imageTemporary;
-      });
+      if(mounted) {
+        setState(() {
+          isUpload = true;
+          this.image = imageTemporary;
+        });
+      }
     } on PlatformException catch (e) {
       if (kDebugMode) {
         print("Failed to pick image $e");
@@ -51,10 +53,14 @@ class _UploadPageState extends State<UploadPage> {
       final image = await ImagePicker().pickImage(source: ImageSource.camera);
       if (image == null) return;
       final imageTemporary = File(image.path);
-      setState(() {
-        isUpload = true;
-        this.image = imageTemporary;
-      });
+
+      if(mounted) {
+        setState(() {
+          isUpload = true;
+          this.image = imageTemporary;
+        });
+      }
+
     } on PlatformException catch (e) {
       if (kDebugMode) {
         print("Failed to pick image $e");
@@ -75,9 +81,11 @@ class _UploadPageState extends State<UploadPage> {
   ////////// ---------- Fire post image ------ /////////////
 
   void _firePostImage() {
-    setState(() {
-      isLoading = true;
-    });
+    if(mounted) {
+      setState(() {
+        isLoading = true;
+      });
+    }
 
     FileService.uploadImage(image!, FileService.folderPostImg).then((imageUrl) => {
       _resPostImage(imageUrl),
@@ -108,12 +116,13 @@ class _UploadPageState extends State<UploadPage> {
   /////////// ----------from upload page to Header page--------- ////////////////
 
   void _moveToFeed() {
-    setState(() {
-      isLoading = false;
-    });
+    if(mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
     Navigator.pushReplacementNamed(context, HeaderPage.id);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +136,7 @@ class _UploadPageState extends State<UploadPage> {
             onPressed: (){
               _uploadNewPost();
             },
-            splashRadius: 10,
+            splashRadius: 20,
             padding: const EdgeInsets.only(right: 8),
             constraints: const BoxConstraints(),
           ),

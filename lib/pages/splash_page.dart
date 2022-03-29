@@ -17,7 +17,9 @@ class _SplashPageState extends State<SplashPage> {
 
   /// from splash to sign in page
   void _openSignInPage() {
-    Timer(const Duration(seconds: 3), () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => _starterPage())));
+    if(mounted) {
+      Timer(const Duration(seconds: 3), () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => _starterPage())));
+    }
   }
 
   // switch pages
