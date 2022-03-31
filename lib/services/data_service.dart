@@ -6,11 +6,11 @@ import 'package:flutter_instagram/services/pref_service.dart';
 
 class DataService {
 
-  /////// -------- FireBase instanse -----------/////////
+  //// ----- FireBase instance ----- ////
 
   static final instance = FirebaseFirestore.instance;
 
-  /////// -------- Folder ------------ /////////
+  //// ----- Folder ----- ////
 
   static const String userFolder = "users";
   static const String postsFolder = "posts";
@@ -18,14 +18,14 @@ class DataService {
   static const String followingsFolder = "followings";
   static const String followersFolder = "followers";
 
-  ///////-------- User store ------- /////////
+  //// ----- User store ----- ////
 
   static Future storeUser(Users user) async {
     user.uid = (await Prefs.load(StorageKeys.UID))!;
     return instance.collection(userFolder).doc(user.uid).set(user.toJson());
   }
 
-  ///////------- User load ------- /////////
+  //// ----- User load ----- ////
 
   static Future<Users> loadUser() async {
     String uid = (await Prefs.load(StorageKeys.UID))!;
@@ -43,14 +43,14 @@ class DataService {
     return Users.fromJson(value.data()!);
   }
 
-  ///////---------- Update User ------- /////////
+  //// ----- Update User ----- ////
 
   static Future updateUser(Users user) async {
     String uid = (await Prefs.load(StorageKeys.UID))!;
     return instance.collection(userFolder).doc(uid).update(user.toJson());
   }
 
-  ///////---------- User search ------- /////////
+  //// ----- User search ----- ////
 
   static Future<List<Users>> searchUsers(String keyword) async {
     Users user = await loadUser();
@@ -71,7 +71,7 @@ class DataService {
 
   // Post //
 
-  ///////---------- Store Post ------- ////////
+  ////----- Store Post ----- ///
 
   static Future<Post> storePost(Post post) async {
 
@@ -89,14 +89,14 @@ class DataService {
     return post;
   }
 
-  ///// ---------- Store feed ---------- ////////
+  //// ----- Store feed ----- ////
 
   static Future<Post> storeFeed(Post post) async {
     await instance.collection(userFolder).doc(post.uid).collection(feedsFolder).doc(post.id).set(post.toJson());
     return post;
   }
 
-  ////// --------- Load feed --------- ////////
+  //// ----- Load feed ----- ////
 
   static Future<List<Post>> loadFeeds() async {
     List<Post> posts = [];
@@ -112,7 +112,7 @@ class DataService {
     return posts;
   }
 
-  ////// ---------- Load posts --------- ////////
+  //// ----- Load posts ----- ////
 
   static Future<List<Post>> loadPosts() async {
     List<Post> posts = [];
@@ -127,7 +127,7 @@ class DataService {
     return posts;
   }
 
-  ////// ---------- Like post for feed Page -----------///////
+  //// ----- Like post for feed Page ----- ////
 
   static Future<Post> likePost(Post post, bool like) async {
     String uid = (await Prefs.load(StorageKeys.UID))!;
@@ -141,7 +141,7 @@ class DataService {
     return post;
   }
 
-  ////// ----------- Like load ------- ////////
+  //// ----- Like load ----- ////
 
   static Future<List<Post>> loadLike() async {
     String uid = (await Prefs.load(StorageKeys.UID))!;
@@ -157,7 +157,7 @@ class DataService {
     return posts;
   }
 
-  ////// --------- follower and following ----------////////
+  //// ----- follower and following ----- ////
 
   static Future<Users> followUser(Users someone) async {
     Users me = await loadUser();
@@ -169,7 +169,7 @@ class DataService {
     return someone;
   }
 
-  ////// --------- unfollow ----------////////
+  //// ----- unfollow ----- ////
 
   static Future<Users> unfollow(Users someone) async {
     Users me = await loadUser();
@@ -181,7 +181,7 @@ class DataService {
     return someone;
   }
 
-  /////// --------- Store Posts to my feed ------- ////////
+  //// ----- Store Posts to my feed ----- ////
 
   static Future storePostsToMyFeed(Users someone) async {
 
@@ -201,7 +201,7 @@ class DataService {
     }
   }
 
-  ///////// ---------- Remove posts from feed ----------- //////////
+  //// ----- Remove posts from feed ----- ////
 
   static Future removePostsFromMyFeed(Users someone) async {
 
@@ -218,7 +218,7 @@ class DataService {
     }
   }
 
-  ////////// ---------- Remove feed ------- ////////////
+  //// ----- Remove feed ----- ////
 
   static Future removeFeed(Post post) async {
     String uid = (await Prefs.load(StorageKeys.UID))!;
@@ -226,11 +226,12 @@ class DataService {
     return await instance.collection(userFolder).doc(uid).collection(feedsFolder).doc(post.id).delete();
   }
 
-  ////////// ---------- Remove post ------- ////////////
+  //// ----- Remove post ----- ////
 
   static Future removePost(Post post) async {
+    String uid = (await Prefs.load(StorageKeys.UID))!;
     await removeFeed(post);
 
-    return await instance.collection(userFolder).doc(post.uid).collection(postsFolder).doc(post.id).delete();
+    return await instance.collection(userFolder).doc(uid).collection(postsFolder).doc(post.id).delete();
   }
 }

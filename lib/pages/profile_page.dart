@@ -154,6 +154,8 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
+  //// ----- Result load post ----- ////
+
   void _resLoadPost(List<Post> posts) {
     setState(() {
       items = posts;

@@ -25,11 +25,9 @@ class _FeedPageState extends State<FeedPage> {
     super.initState();
     _fireLoadFeeds();
     _apiLoadUser();
-
   }
 
-  /////// --------- For user load ------ /////////
-
+  //// ---- For user load ----- ////
   void _apiLoadUser() async {
     if(mounted) {
       setState(() {
@@ -39,8 +37,7 @@ class _FeedPageState extends State<FeedPage> {
     DataService.loadUser().then((value) => _showUserInfo(value));
   }
 
-  /////// --------- Show user info --------- ////////
-
+  //// ----- Show user info ----- ////
   void _showUserInfo(Users user) {
     if(mounted) {
       setState(() {
@@ -50,8 +47,7 @@ class _FeedPageState extends State<FeedPage> {
     }
   }
 
-  ////// ------- Fire load feeds ----- ////////
-
+  //// ----- Fire load feeds ----- ////
   void _fireLoadFeeds() async {
     if(mounted) {
       setState(() {
@@ -64,8 +60,7 @@ class _FeedPageState extends State<FeedPage> {
     });
   }
 
-  ///// ------- Res load feeds ---- /////
-
+  //// ----- Res load feeds ---- /////
   void _resLoadFeeds(List<Post> posts) {
     if(mounted) {
       setState(() {
@@ -76,7 +71,6 @@ class _FeedPageState extends State<FeedPage> {
   }
 
   //// ----- Fire post like ----- /////
-
   void _firePostLike(Post post) async {
     if(mounted) {
       setState(() {
@@ -93,7 +87,6 @@ class _FeedPageState extends State<FeedPage> {
   }
 
   //// ----- Fire post unlike ----- ////
-
   void _firePostUnlike(Post post) async {
     if(mounted) {
       setState(() {
@@ -112,7 +105,6 @@ class _FeedPageState extends State<FeedPage> {
   }
 
   //// ----- update like ----- ////
-
   void updateLike(Post post) {
     if(!post.isLiked) {
       _firePostLike(post);
@@ -123,6 +115,12 @@ class _FeedPageState extends State<FeedPage> {
     }
   }
 
+  //// ----- Remove post ----- ////
+  void _fireRemovePost(Post post) {
+
+  }
+
+  //// ----- Page to page animation ----- /////
   Route _createRoute() {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => const LikesPage(),
@@ -368,8 +366,6 @@ class _FeedPageState extends State<FeedPage> {
                           _firePostLike(items[index]);
                         },
                       ),
-
-                      // button
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                         child: Row(
@@ -416,6 +412,8 @@ class _FeedPageState extends State<FeedPage> {
                           ],
                         ),
                       ),
+                      // button
+
 
                       // likes
                       Padding(
@@ -446,7 +444,6 @@ class _FeedPageState extends State<FeedPage> {
                           height: 35,
                         ),
                       )
-
                     ],
                   ),
                 );
