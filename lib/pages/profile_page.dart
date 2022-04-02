@@ -9,6 +9,7 @@ import 'package:flutter_instagram/models/user_model.dart';
 import 'package:flutter_instagram/services/auth_service.dart';
 import 'package:flutter_instagram/services/data_service.dart';
 import 'package:flutter_instagram/services/file_service.dart';
+import 'package:flutter_instagram/services/utils.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -20,9 +21,10 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+
   late TabController controller;
-  int followers = 140;
-  int following = 120;
+  int followers = 0;
+  int following = 0;
 
   String bio = "Japan International University of Information Technologies Japan International University of Information Technologies Japan International University of Information Technologies";
   String url = "t.me/mrobidjon/";
@@ -162,7 +164,25 @@ class _ProfilePageState extends State<ProfilePage> {
       postCount = posts.length;
     });
   }
-  
+
+  void _deletePost(Post post) async {
+    bool result = await Utils.dialogCommon(
+        context, "Instagram Clone", "Do yu want to remove this post?", false);
+
+    if (result) {
+      setState(() {
+        isLoading = true;
+      });
+
+      await DataService.removePost(post);
+
+      setState(() {
+        isLoading = false;
+      });
+
+      _apiLoadPost();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -199,7 +219,7 @@ class _ProfilePageState extends State<ProfilePage> {
             // delete account
             IconButton(
               onPressed: (){
-                // AuthService.deleteAccount(context);
+                AuthService.deleteAccount(context);
               },
               icon: const Icon(Icons.dehaze, color: Colors.black,),
               padding: const EdgeInsets.only(right: 10),
@@ -436,11 +456,16 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                           itemCount: items.length,
                           itemBuilder: (context, index){
-                            return CachedNetworkImage(
-                              imageUrl: items[index].postImage,
-                              fit: BoxFit.cover,
-                              placeholder: (context, url) => Container(
-                                color: Colors.blueGrey.shade600,
+                            return GestureDetector(
+                              onLongPress: (){
+                                _deletePost(items[index]);
+                              },
+                              child: CachedNetworkImage(
+                                imageUrl: items[index].postImage,
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) => Container(
+                                  color: Colors.blueGrey.shade600,
+                                ),
                               ),
                             );
                           },

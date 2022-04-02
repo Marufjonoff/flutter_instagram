@@ -37,6 +37,38 @@ class _ResultSearchPageState extends State<ResultSearchPage> {
     });
   }
 
+  void _apiFollowUser(Users someone) async {
+    setState(() {
+      isLoading = true;
+    });
+    await DataService.followUser(someone);
+    setState(() {
+      someone.followed = true;
+      isLoading = false;
+    });
+    DataService.storePostsToMyFeed(someone);
+  }
+
+  void _apiUnFollowUser(Users someone) async {
+    setState(() {
+      isLoading = true;
+    });
+    await DataService.unfollow(someone);
+    setState(() {
+      someone.followed = false;
+      isLoading = false;
+    });
+    DataService.removePostsFromMyFeed(someone);
+  }
+
+  void updateFollow(Users user) {
+    if(user.followed) {
+      _apiUnFollowUser(user);
+    } else {
+      _apiFollowUser(user);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -119,8 +151,10 @@ class _ResultSearchPageState extends State<ResultSearchPage> {
             borderRadius: BorderRadius.circular(5),
           ),
           child: MaterialButton(
-            onPressed: () {},
-            child: const Text("Follow", style: TextStyle(color: Colors.black87,), ),
+            onPressed: () {
+              updateFollow(user);
+            },
+            child: Text(user.followed ? "Following" : "Follow", style: const TextStyle(color: Colors.black87,), ),
           ),
         ),
       ),

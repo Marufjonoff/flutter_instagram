@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_instagram/pages/feed_page.dart';
@@ -5,6 +6,7 @@ import 'package:flutter_instagram/pages/likes_page.dart';
 import 'package:flutter_instagram/pages/profile_page.dart';
 import 'package:flutter_instagram/pages/search_page.dart';
 import 'package:flutter_instagram/pages/upload_page.dart';
+import 'package:flutter_instagram/services/utils.dart';
 
 class HeaderPage extends StatefulWidget {
   const HeaderPage({Key? key}) : super(key: key);
@@ -17,6 +19,16 @@ class HeaderPage extends StatefulWidget {
 class _HeaderPageState extends State<HeaderPage> {
   final PageController _pageController = PageController();
   late int _currentTap = 0;
+
+  _initNotification() {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print("Message: ${message.notification.toString()}");
+      Utils.showLocalNotification(message);
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      Utils.showLocalNotification(message);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

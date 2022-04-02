@@ -1,57 +1,3 @@
-// import 'dart:convert';
-//
-// class Users {
-//   Users({
-//     required this.uid,
-//     required this.fullname,
-//     required this.email,
-//     required this.password,
-//     required this.imageUrl,
-//     required this.followed,
-//     required this.followerCount,
-//     required this.followingCount,
-//   });
-//
-//   String uid;
-//   String fullname;
-//   String email;
-//   String password;
-//   String? imageUrl;
-//   bool followed;
-//   int followerCount;
-//   int followingCount;
-//
-//   factory Users.fromJson(Map<String, dynamic> json) => Users(
-//     uid: json["uid"],
-//     fullname: json["fullname"],
-//     email: json["email"],
-//     password: json["password"],
-//     imageUrl: json["imageUrl"],
-//     followed: json["followed"],
-//     followerCount: json["followerCount"],
-//     followingCount: json["followingCount"],
-//   );
-//
-//   Map<String, dynamic> toJson() => {
-//     "uid": uid,
-//     "fullname": fullname,
-//     "email": email,
-//     "password": password,
-//     "imageUrl": imageUrl,
-//     "followed": followed,
-//     "followerCount": followerCount,
-//     "followingCount": followingCount,
-//   };
-//
-//   @override
-//   bool operator == (Object other) {
-//     return (other is Users) && other.uid = uid;
-//   }
-//
-//   @override
-//   int get hashCode => uid.hashCode;
-// }
-
 class Users {
   String uid = "";
   late String fullName;
@@ -61,6 +7,10 @@ class Users {
   bool followed = false;
   int followersCount = 0;
   int followingCount = 0;
+
+  String device_id = "";
+  String device_type = "";
+  String device_token = "";
 
   Users({required this.fullName, required this.email, required this.password});
 
@@ -72,6 +22,10 @@ class Users {
     imageUrl = json["imageUrl"];
     followingCount = json["followingCount"];
     followersCount = json["followersCount"];
+
+    device_id = json['device_id']??"";
+    device_type = json['device_type']??"";
+    device_token = json['device_token']??"";
   }
 
   Map<String, dynamic> toJson() => {
@@ -82,6 +36,10 @@ class Users {
     "imageUrl": imageUrl,
     "followersCount": followersCount,
     "followingCount": followingCount,
+
+    'device_id': device_id,
+    'device_type': device_type,
+    'device_token': device_token,
   };
 
   @override
